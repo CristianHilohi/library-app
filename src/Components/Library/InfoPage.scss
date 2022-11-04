@@ -1,0 +1,11 @@
+@import 'src/Theme/variables.module';
+
+.info-page {
+  background-color: $background-light;
+  section div {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    margin: 4em 0 4em 0;
+  }
+}

@@ -1,0 +1,25 @@
+@import 'src/Theme/variables.module';
+
+.header-bar {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  padding: 20px;
+  align-items: center;
+
+  .app-logo {
+    padding: 6px;
+    background-color: $primary-dark;
+    transform: skewX(-17deg);
+    h3 {
+      color: cornsilk;
+      transform: skewX(13deg);
+      font-weight: 700;
+      font-family: Copperplate, serif;
+    }
+  }
+
+  @media screen and (max-width: 700px) {
+    flex-direction: column-reverse;
+  }
+}

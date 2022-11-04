@@ -1,5 +1,5 @@
 const BooksList = () => {
-    return <div className='books-list'>
+    return <div className='books-list page-container'>
         Books list
     </div>
 }
