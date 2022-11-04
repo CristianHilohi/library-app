@@ -4,7 +4,7 @@ import {Book, BorrowedCopy, Client, Library} from "../Models";
 
 export const useBooks = () => {
     //const [library, setLibrary] = useState<<Library> | {}>({}) // maybe will use this later
-    const [booksList, setBooksList] = useState<Array<Book> | []>([]);
+    const [booksList, setBooksList] = useState<Array<Book> | null>(null);
 
     // for keeping it simple, will use just one 'db' entity
     const getBooks = () => {

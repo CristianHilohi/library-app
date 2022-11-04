@@ -6,11 +6,13 @@
   height: 100vh;
 
   .page-container {
-    margin: 5em;
+    margin: 4em 8em 4em 8em;
     padding: 20px;
     border-radius: 10px;
     justify-content: center;
     align-items: center;
+    background-color: $background-light;
+
     @media screen and (max-width: 700px) {
       margin: 1em;
     }
