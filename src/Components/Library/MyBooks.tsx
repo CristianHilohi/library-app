@@ -15,12 +15,15 @@ import TableBody from "@mui/material/TableBody";
 import {SingleBorrowedCopy} from "./SingleBorrowedCopy";
 
 export const MyBooks = () => {
-    const {user, isLoading} = useAuth0();
+    const {user, isLoading, isAuthenticated} = useAuth0();
     const {navigateToBooksList} = useAppNavigation();
     // @ts-ignore
     const {borrowedCopiesList, getUsersCopies, getBooks} = useContext(BooksContext);
 
     useEffect(() => {
+        if(!isAuthenticated) {
+            navigateToBooksList();
+        }
         getBooks();
         getUsersCopies(user?.email);
     }, [user]);

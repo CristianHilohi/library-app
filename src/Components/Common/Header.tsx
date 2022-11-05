@@ -41,9 +41,6 @@ const Header = () => {
     return <header className='header-bar'>
         <div className='header-actions'>
 
-            {userIsAdmin() && <IconButton>
-                <SettingsIcon/>
-            </IconButton>}
             <IconButton onClick={navigateHome}>
                 <HomeIcon/>
             </IconButton>

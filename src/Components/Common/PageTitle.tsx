@@ -12,7 +12,7 @@ export const PageTitle: React.FC<{ title: string, emptyText?: string | null }> =
     const displayText = emptyText.length > 0 ? emptyText : title;
 
     const navigateBack = () => {
-        navigate(-1);
+        navigate('/');
     }
 
     return <div className='centered-header'>

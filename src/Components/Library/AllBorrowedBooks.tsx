@@ -13,9 +13,12 @@ import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import {BorrowedCopy} from "../../Models";
 import {SingleBorrowedCopy} from "./SingleBorrowedCopy";
+import {useAppNavigation} from "../../Hooks/useAppNavigation";
 
 export const AllBorrowedBooks = () => {
     const {user, isLoading} = useAuth0();
+    const {userIsAdmin} = useUsers();
+    const {navigateToBooksList} = useAppNavigation();
     // @ts-ignore
     const {borrowedCopiesList, getBooks, getAllBorrowedCopies} = useContext(BooksContext);
 
@@ -23,6 +26,12 @@ export const AllBorrowedBooks = () => {
         getBooks();
         getAllBorrowedCopies();
     }, []);
+
+    useEffect(() => {
+        if(!userIsAdmin()) {
+            navigateToBooksList();
+        }
+    }, [user])
 
     if (isLoading) {
         return <div className='page-container'><CircularProgress/></div>
