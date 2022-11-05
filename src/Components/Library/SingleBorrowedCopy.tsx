@@ -6,10 +6,12 @@ import {BooksContext} from "../../App";
 import {Button, IconButton} from "@mui/material";
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import {DetailsDialog} from "./DetailsDialog";
+import {useAuth0} from "@auth0/auth0-react";
 
 export const SingleBorrowedCopy: React.FC<{ bookCopy: BorrowedCopy }> = ({bookCopy}) => {
     // @ts-ignore
-    const {findCopyByIsbn} = useContext(BooksContext);
+    const {findCopyByIsbn, returnBookCopy} = useContext(BooksContext);
+    const {user} = useAuth0();
 
     const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState<boolean>(false);
 
@@ -28,6 +30,9 @@ export const SingleBorrowedCopy: React.FC<{ bookCopy: BorrowedCopy }> = ({bookCo
 
     const handleCloseDetailsDialog = () => setIsDetailsDialogOpen(false);
 
+    const handleReturnBook = () => {
+        returnBookCopy(bookCopy.isbn, bookCopy.borrowDate);
+    }
 
     const calculateDaysPassed = () => {
         const daysPassed = 17;
@@ -65,11 +70,18 @@ export const SingleBorrowedCopy: React.FC<{ bookCopy: BorrowedCopy }> = ({bookCo
         day: "numeric"
     })
 
+    // for the case when admin sees all borrowed books,
+    // only the user who borrowed can return
+    const isTheSameUser = () => {
+        return user?.email === bookCopy.client.email;
+    }
+
     const GetActions = () => {
         return <span>
-            <Button variant={'outlined'} size='small'>
-                Return book
-            </Button>
+            {isTheSameUser() &&
+                <Button onClick={handleReturnBook} variant={'outlined'} size='small'>
+                    Return book
+                </Button>}
             <IconButton onClick={handleOpenDetailsDialog}>
                 <ContactMailIcon/>
             </IconButton>

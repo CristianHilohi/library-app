@@ -33,6 +33,8 @@ export const MyBooks = () => {
         <PageTitle title='My borrowed books:'
                    emptyText={!borrowedCopiesList ? 'You don\'t have any books borrowed' : ''}/>
 
+        {/*I wanted to also add some sorting to the table, but found out that MUI doesn't provide sorting in the table API*/}
+        {/*I can do it manually or change the table component (for example Ant Design has sort options)*/}
         {borrowedCopiesList && <TableContainer  component={Paper}>
             <Table sx={{minWidth: 650}} aria-label="simple table" className={'books-table'}>
                 <TableHead>

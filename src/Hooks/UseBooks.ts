@@ -131,8 +131,11 @@ export const useBooks = () => {
         return;
     }
 
-    const returnBookCopy = async (isbn: string) => {
-
+    const returnBookCopy = async (isbn: string, borrowDate: Date) => {
+        // Will check only date because a user can borrow multiple copies of the same book and the date has a precise enough timestamp
+        const updatedBorrowedCopies = borrowedCopiesList.filter((copy:BorrowedCopy) => copy.borrowDate !== borrowDate);
+        setBorrowedCopiesList(updatedBorrowedCopies);
+        await supplyStock(isbn);
         return 0;
     }
 
