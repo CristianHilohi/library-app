@@ -5,7 +5,7 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {BooksContext} from "../../App";
 import {Book} from "../../Models";
 import {SingleBookRow} from "./SingleBookRow";
@@ -16,8 +16,12 @@ import {AddBookDialog} from "./AddBookDialog";
 
 export const AllBooksList = () => {
     // @ts-ignore
-    const {bookList, addBook} = useContext(BooksContext);
+    const {booksList} = useContext(BooksContext);
     const {userIsAdmin} = useUsers();
+
+    useEffect(() => {
+        console.table(booksList)
+    },[booksList])
 
     const [addDialogIsOpen, setAddDialogIsOpen] = useState<boolean>(false);
 
@@ -27,21 +31,21 @@ export const AllBooksList = () => {
 
     return <div className='books-list page-container'>
         <PageTitle title={'These are the books you can find in our library:'}
-                   emptyText={!bookList ? 'There are no available books in the library yet!' : ''}/>
+                   emptyText={!booksList ? 'There are no available books in the library yet!' : ''}/>
 
-        {bookList &&
+        {booksList &&
             <TableContainer component={Paper}>
                 <Table sx={{minWidth: 650}} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align='right'>Name</TableCell>
-                            <TableCell align='right'>Available copies</TableCell>
-                            <TableCell align='right'>Price per day (€)</TableCell>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Available copies</TableCell>
+                            <TableCell>Price per day (€)</TableCell>
                             <TableCell align='right'/>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {bookList?.map((book: Book) => <SingleBookRow book={book}/>)}
+                        {booksList?.map((book: Book) => <SingleBookRow book={book}/>)}
                     </TableBody>
                 </Table>
             </TableContainer>}
