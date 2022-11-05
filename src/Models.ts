@@ -7,7 +7,6 @@ export type Client = {
 export type BorrowedCopy = {
     isbn: string; // ~= id
     borrowDate: Date;
-    returnDate: Date | null;
 
     client: Client;
 }

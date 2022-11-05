@@ -17,7 +17,7 @@ import './TablesStyle.scss';
 
 export const AllBooksList = () => {
     // @ts-ignore
-    const {booksList} = useContext(BooksContext);
+    const {booksList, getBooks} = useContext(BooksContext);
     const {userIsAdmin} = useUsers();
 
     const [addDialogIsOpen, setAddDialogIsOpen] = useState<boolean>(false);
@@ -26,11 +26,15 @@ export const AllBooksList = () => {
 
     const closeAddDialog = () => setAddDialogIsOpen(false);
 
+    useEffect(() => {
+        getBooks();
+    }, []);
+
     return <div className='books-list page-container'>
         <PageTitle title={'These are the books you can find in our library:'}
-                   emptyText={!booksList ? 'There are no available books in the library yet!' : ''}/>
+                   emptyText={!booksList.length ? 'There are no available books in the library yet!' : ''}/>
 
-        {booksList &&
+        {!!booksList.length &&
             <TableContainer component={Paper}>
                 <Table sx={{minWidth: 650}} aria-label="simple table" className={'books-table'}>
                     <TableHead>
@@ -42,7 +46,7 @@ export const AllBooksList = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {booksList?.map((book: Book) => <SingleBookRow book={book}/>)}
+                        {booksList?.map((book: Book) => <SingleBookRow key={book.isbn} book={book}/>)}
                     </TableBody>
                 </Table>
             </TableContainer>}

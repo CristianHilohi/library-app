@@ -10,12 +10,18 @@ export const useBooks = () => {
     // for keeping it simple, will use just one local storage entity -> books
 
     useEffect(() => {
-        getBooks();
-    }, [])
+        if (!firstCall) {
+            localStorage.setItem("books", JSON.stringify(booksList));
+        }
+        return () => {
+            if (firstCall) {
+                setFirstCall(false);
+            }
+        }
+    }, [booksList]);
 
     useEffect(() => {
         if (!firstCall) {
-            localStorage.setItem("books", JSON.stringify(booksList));
             localStorage.setItem("borrowedCopies", JSON.stringify(borrowedCopiesList));
         }
         return () => {
@@ -23,7 +29,7 @@ export const useBooks = () => {
                 setFirstCall(false);
             }
         }
-    }, [booksList, borrowedCopiesList]);
+    }, [borrowedCopiesList]);
 
     // actually there is no need for async, since these functions run only in the FE,
     // but I'll add it for future BE implementation.
@@ -33,11 +39,22 @@ export const useBooks = () => {
         const localStorageBooksString: string = localStorage.getItem('books') ?? '[]';
         const localStorageBooksObject: Array<Book> = JSON.parse(localStorageBooksString);
 
+        setBooksList(localStorageBooksObject ?? []);
+    }
+
+    const getAllBorrowedCopies = async () => {
         const localStorageBorrowedCopiesString: string = localStorage.getItem('borrowedCopies') ?? '[]';
         const localStorageBorrowedCopiesObject: Array<BorrowedCopy> = JSON.parse(localStorageBorrowedCopiesString);
 
-        setBooksList(localStorageBooksObject ?? []);
         setBorrowedCopiesList(localStorageBorrowedCopiesObject ?? []);
+    }
+
+    const getUsersCopies = async (email:string) => {
+        const localStorageBorrowedCopiesString: string = localStorage.getItem('borrowedCopies') ?? '[]';
+        const localStorageBorrowedCopiesObject: Array<BorrowedCopy> = JSON.parse(localStorageBorrowedCopiesString);
+
+        const usersCopies = localStorageBorrowedCopiesObject.filter((borrowedCopy:BorrowedCopy) => borrowedCopy.client.email === email);
+        setBorrowedCopiesList(usersCopies ?? []);
     }
 
     const addBook = async (book: Book) => {
@@ -85,10 +102,6 @@ export const useBooks = () => {
         return bookIsInStock;
     }
 
-    // const editBook = (book: Book) => {
-    //     return;
-    // }
-
     const borrowBookCopy = async (isbn: string, client: Client) => {
         const bookInStock = await checkStock(isbn);
         if (bookInStock) {
@@ -98,7 +111,6 @@ export const useBooks = () => {
             const copyToBeBorrowed: BorrowedCopy = {
                 isbn: isbn,
                 client: client,
-                returnDate: null,
                 borrowDate: new Date(Date.now())
             }
 
@@ -119,42 +131,30 @@ export const useBooks = () => {
         return;
     }
 
-    const returnBookCopy = async (isbn: string, cliendId: string) => {
-        let price = 0;
-        let numberOfDays = 0;
-        let penaltyDays = 0;
+    const returnBookCopy = async (isbn: string) => {
 
-        const copyBeReturned: BorrowedCopy | null = findCopyToBeReturned(isbn, cliendId);
-        if (copyBeReturned) {
-            numberOfDays = getNumberOfDays(copyBeReturned);
-            if (numberOfDays > 14) {
-                penaltyDays = numberOfDays - 14;
-            }
-        }
-
-        //const totalCost = numberOfDays .......
-        return 0
-    }
-
-    const findCopyToBeReturned = (isbn: string, cliendId: string) => {
-        let copy: BorrowedCopy | null = null;
-        return copy;
-    }
-
-    const getNumberOfDays = (copy: BorrowedCopy) => {
         return 0;
+    }
+
+    const findCopyByIsbn = (isbn: string) => {
+        const book: Book | null = booksList?.find((book: Book) => book.isbn === isbn) ?? null;
+
+        return book;
     }
 
     return {
         booksList,
+        borrowedCopiesList,
         getBooks,
+        getAllBorrowedCopies,
+        getUsersCopies,
         addBook,
         removeBook,
-        // editBook,
         borrowBookCopy,
         returnBookCopy,
         supplyStock,
         reduceStock,
+        findCopyByIsbn,
     }
 
 }
