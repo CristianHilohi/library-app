@@ -1,11 +1,8 @@
-type ContactEntity = {
-    id: number;
+export type Client = {
+    email: string;
     name: string;
     address: string;
     phoneNumber: string;
-}
-
-export type Client = ContactEntity & {
     booksBorrowed: Array<string>; // representing books ids
 }
 
@@ -25,8 +22,4 @@ export type Book = {
     stocks: number; // books in library
 
     borrowedCopies: Array<BorrowedCopy>;
-}
-
-export type Library = ContactEntity & {
-    books: Array<Book>;
 }

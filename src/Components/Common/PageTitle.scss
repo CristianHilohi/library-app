@@ -1,0 +1,9 @@
+.centered-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .center-element {
+    flex: 1;
+  }
+}

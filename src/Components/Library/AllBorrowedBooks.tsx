@@ -3,23 +3,13 @@ import {useEffect} from "react";
 import {useUsers} from "../../Hooks/useUsers";
 import {useNavigate} from "react-router-dom";
 import {CircularProgress} from "@mui/material";
+import {PageTitle} from "../Common/PageTitle";
 
 export const AllBorrowedBooks = () => {
-    const {user, isLoading} = useAuth0();
-    const {userIsAdmin} = useUsers();
-    const navigate = useNavigate();
+    const {user} = useAuth0();
 
-    useEffect(()=> {
-        if(!userIsAdmin()) {
-            navigate('/');
-        }
-    }, [user])
 
-    if(isLoading) {
-        return <div className='page-container'><CircularProgress /></div>
-    }
-
-    return <div>
-        <h2>All borrowed books:</h2>
+    return <div className='all-borrowed-books page-container'>
+        <PageTitle title={'All borrowed books:'} emptyText={true ? 'No borrowed books' : ''}/>
     </div>
 }

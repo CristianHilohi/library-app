@@ -1,21 +1,20 @@
-import {Button, CircularProgress, IconButton, Typography} from "@mui/material";
-import InfoIcon from '@mui/icons-material/Info';
+import { CircularProgress, IconButton, Typography} from "@mui/material";
+import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 import SettingsIcon from '@mui/icons-material/Settings';
 
-import {useState, useEffect} from "react";
 import {useAuth0} from "@auth0/auth0-react";
 
 import {useUsers} from "../../Hooks/useUsers";
 
 import './Header.scss';
-import {useNavigate} from "react-router-dom";
+import {useAppNavigation} from "../../Hooks/useAppNavigation";
 
 const Header = () => {
     const {loginWithRedirect, logout, user, isAuthenticated, isLoading} = useAuth0();
     const {userIsAdmin} = useUsers();
-    const navigate = useNavigate();
+    const {navigateHome} = useAppNavigation();
 
     const handleButtonClick = () => {
         if (isLoading) {
@@ -38,10 +37,6 @@ const Header = () => {
         return <LoginIcon/>
     }
 
-    const navigateToInfo = () => {
-        //window.location.href = '/';
-        navigate('/');
-    }
 
     return <header className='header-bar'>
         <div className='header-actions'>
@@ -49,8 +44,8 @@ const Header = () => {
             {userIsAdmin() && <IconButton>
                 <SettingsIcon/>
             </IconButton>}
-            <IconButton onClick={navigateToInfo}>
-                <InfoIcon/>
+            <IconButton onClick={navigateHome}>
+                <HomeIcon/>
             </IconButton>
             <IconButton onClick={handleButtonClick}>
                 {LoginButtonContent()}
