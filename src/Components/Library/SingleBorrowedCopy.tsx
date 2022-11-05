@@ -7,6 +7,7 @@ import {Button, IconButton} from "@mui/material";
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import {DetailsDialog} from "./DetailsDialog";
 import {useAuth0} from "@auth0/auth0-react";
+import moment from "moment";
 
 export const SingleBorrowedCopy: React.FC<{ bookCopy: BorrowedCopy }> = ({bookCopy}) => {
     // @ts-ignore
@@ -35,7 +36,10 @@ export const SingleBorrowedCopy: React.FC<{ bookCopy: BorrowedCopy }> = ({bookCo
     }
 
     const calculateDaysPassed = () => {
-        const daysPassed = 17;
+        const borrowDateMoment = moment(bookCopy.borrowDate);
+        const now = moment();
+        const daysPassed = borrowDateMoment.diff(now, "days") + 1;
+
         if (daysPassed > 14) {
             const penaltyDays: number = daysPassed - 14;
             const penaltyCost: number = penaltyDays * ((book?.price ?? 1) * 0.01);
