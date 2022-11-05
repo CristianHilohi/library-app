@@ -3,7 +3,7 @@ import {Book, BorrowedCopy, Client} from "../Models";
 
 
 export const useBooks = () => {
-    const [booksList, setBooksList] = useState<Array<Book> | null>(null);
+    const [booksList, setBooksList] = useState<Array<Book>>([]);
     const [firstCall, setFirstCall] = useState<boolean>(true);
 
     // for keeping it simple, will use just one local storage entity -> books
@@ -33,15 +33,14 @@ export const useBooks = () => {
     const addBook = async (book: Book) => {
         // @ts-ignore
         const updatedBooksList = [...booksList];
-        updatedBooksList.push(book)
-        console.log('updatedBooksList: ', updatedBooksList)
+        updatedBooksList.push(book);
 
         setBooksList(updatedBooksList);
         return;
     }
 
-    const removeBook = (isbn: string) => {
-        return;
+    const removeBook = async (isbn: string) => {
+        setBooksList(booksList.filter((book) => book.isbn !== isbn));
     }
 
     const editBook = (book: Book) => {

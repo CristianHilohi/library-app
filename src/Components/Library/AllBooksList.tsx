@@ -13,15 +13,12 @@ import {useUsers} from "../../Hooks/useUsers";
 import Button from "@mui/material/Button";
 import {PageTitle} from "../Common/PageTitle";
 import {AddBookDialog} from "./AddBookDialog";
+import './TablesStyle.scss';
 
 export const AllBooksList = () => {
     // @ts-ignore
     const {booksList} = useContext(BooksContext);
     const {userIsAdmin} = useUsers();
-
-    useEffect(() => {
-        console.table(booksList)
-    },[booksList])
 
     const [addDialogIsOpen, setAddDialogIsOpen] = useState<boolean>(false);
 
@@ -35,12 +32,13 @@ export const AllBooksList = () => {
 
         {booksList &&
             <TableContainer component={Paper}>
-                <Table sx={{minWidth: 650}} aria-label="simple table">
+                <Table sx={{minWidth: 650}} aria-label="simple table" className={'books-table'}>
                     <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
                             <TableCell>Available copies</TableCell>
                             <TableCell>Price per day (€)</TableCell>
+                            <TableCell>Available books</TableCell>
                             <TableCell align='right'/>
                         </TableRow>
                     </TableHead>
@@ -50,6 +48,7 @@ export const AllBooksList = () => {
                 </Table>
             </TableContainer>}
 
+        <br />
         {userIsAdmin() && <Button onClick={openAddDialog} variant='contained'>Add Book</Button>}
 
         {addDialogIsOpen && <AddBookDialog isDialogOpen={addDialogIsOpen} closeDialog={closeAddDialog}/>}
