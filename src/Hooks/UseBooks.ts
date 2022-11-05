@@ -1,17 +1,36 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Book, BorrowedCopy, Client} from "../Models";
 
 
 export const useBooks = () => {
     //const [library, setLibrary] = useState<<Library> | {}>({}) // maybe will use this later
     const [booksList, setBooksList] = useState<Array<Book> | null>(null);
+    const [firstCall, setFirstCall] = useState<boolean> (true);
 
-    // for keeping it simple, will use just one 'db' entity
+    // for keeping it simple, will use just one local storage entity -> books
+
+    useEffect(()=> {
+        getBooks();
+    }, [])
+
+    useEffect(()=> {
+        console.log(booksList);
+        if(!firstCall) {
+            localStorage.setItem("books", JSON.stringify(booksList));
+        }
+        return () => setFirstCall(false);
+    }, [booksList]);
+
     const getBooks = () => {
-        setBooksList([]);
+        const localStorageBooksString: string = localStorage.getItem('books') ?? '';
+        const localStorageBooksObject: Array<Book> = JSON.parse(localStorageBooksString);
+
+        setBooksList(localStorageBooksObject ?? []);
     }
 
     const addBook = (book: Book) => {
+        // @ts-ignore
+        booksList.push(book);
         return;
     }
 

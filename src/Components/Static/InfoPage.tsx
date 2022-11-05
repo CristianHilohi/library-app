@@ -12,7 +12,7 @@ const InfoPage = () => {
 
     return <div className='info-page page-container'>
         <section>
-            <PageTitle title={`Welcome to ${process.env.REACT_APP_NAME}`!} />
+            <PageTitle title={`Welcome to ${process.env.REACT_APP_NAME}!`} />
             <p>
                 This is your online library that allows you to borrow and return books. With a free account you can
                 manage all you library interactions.
