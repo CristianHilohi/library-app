@@ -36,7 +36,6 @@ export const AllBooksList = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
-                            <TableCell>Available copies</TableCell>
                             <TableCell>Price per day (€)</TableCell>
                             <TableCell>Available books</TableCell>
                             <TableCell align='right'/>

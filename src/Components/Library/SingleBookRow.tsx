@@ -21,14 +21,14 @@ export const SingleBookRow: React.FC<{ book: Book }> = ({book}) => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
 
     // @ts-ignore
-    // const {supplyStock, reduceStock} = useContext(BooksContext);  TODO
+    const {supplyStock, reduceStock} = useContext(BooksContext);
 
     const handleRemoveStockCopy = () => {
-
+        reduceStock(book.isbn);
     }
 
     const handleAddStockCopy = () => {
-
+        supplyStock(book.isbn);
     }
 
     const handleOpenDeleteDialog = () => {
@@ -73,7 +73,6 @@ export const SingleBookRow: React.FC<{ book: Book }> = ({book}) => {
         sx={{'&:last-child td, &:last-child th': {border: 0}}}
     >
         <TableCell>{book.name}</TableCell>
-        <TableCell>{book.stocks}</TableCell>
         <TableCell>{book.price}</TableCell>
         <TableCell>{Stocks()}</TableCell>
         <TableCell align='right'>

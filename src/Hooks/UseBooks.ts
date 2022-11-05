@@ -40,7 +40,30 @@ export const useBooks = () => {
     }
 
     const removeBook = async (isbn: string) => {
-        setBooksList(booksList.filter((book) => book.isbn !== isbn));
+        const updatedBooks = booksList.filter((book) => book.isbn !== isbn);
+        setBooksList(updatedBooks);
+    }
+
+    const supplyStock = async (isbn: string) => {
+        const updatedBooks = booksList.map((book: Book) => {
+            if(book.isbn === isbn) {
+                book.stocks++;
+                return book;
+            }
+            return book;
+        });
+        setBooksList(updatedBooks);
+    }
+
+    const reduceStock = async (isbn: string) => {
+        const updatedBooks = booksList.map((book: Book) => {
+            if(book.isbn === isbn && book.stocks > 0) {
+                book.stocks--;
+                return book;
+            }
+            return book;
+        });
+        setBooksList(updatedBooks);
     }
 
     const editBook = (book: Book) => {
@@ -70,8 +93,6 @@ export const useBooks = () => {
 
     const findCopyToBeReturned = (isbn: string, cliendId: string) => {
         let copy: BorrowedCopy | null = null;
-
-
         return copy;
     }
 
@@ -87,6 +108,8 @@ export const useBooks = () => {
         editBook,
         borrowBookCopy,
         returnBookCopy,
+        supplyStock,
+        reduceStock,
     }
 
 }
