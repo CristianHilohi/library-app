@@ -48,7 +48,6 @@ export const AddBookDialog: React.FC<{ isDialogOpen: boolean, closeDialog: Funct
             name: name.trim(),
             price: Number(price),
             stocks: Number(stocks),
-            borrowedCopies: null,
         }
         addBook(newBook).then(closeDialog());
         return;

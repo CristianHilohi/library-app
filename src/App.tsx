@@ -7,6 +7,8 @@ import InfoPage from "./Components/Static/InfoPage";
 import { AllBooksList } from './Components/Library/AllBooksList';
 import {MyBooks} from './Components/Library/MyBooks';
 import {AllBorrowedBooks} from "./Components/Library/AllBorrowedBooks";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const BooksContext = React.createContext(null);
 
@@ -26,6 +28,15 @@ function App() {
                         <Route path='*' element={<InfoPage />}/>
                     </Routes>
                 </BrowserRouter>
+                <ToastContainer
+                    position="bottom-center"
+                    autoClose={5000}
+                    closeOnClick
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="dark"
+                />
             </div>
         </BooksContext.Provider>
 

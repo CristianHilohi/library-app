@@ -13,12 +13,14 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {DeleteBookDialog} from "./DeleteBookDialog";
+import {BorrowDialog} from "./BorrowDialog";
 
 export const SingleBookRow: React.FC<{ book: Book }> = ({book}) => {
     const {isAuthenticated} = useAuth0();
     const {userIsAdmin} = useUsers();
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
+    const [isBorrowDialogOpen, setIsBorrowDialogOpen] = useState<boolean>(false);
 
     // @ts-ignore
     const {supplyStock, reduceStock} = useContext(BooksContext);
@@ -39,13 +41,21 @@ export const SingleBookRow: React.FC<{ book: Book }> = ({book}) => {
         setIsDeleteDialogOpen(false);
     }
 
+    const handleOpenBorrowDialog = () => {
+        setIsBorrowDialogOpen(true);
+    }
+
+    const handleCloseBorrowDialog = () => {
+        setIsBorrowDialogOpen(false);
+    }
+
     const BookAction = () => {
         if (book.stocks === 0) {
             // @ts-ignore
             return <span>no books available</span>
         }
         if (isAuthenticated) {
-            return <Button variant='contained'>
+            return <Button onClick={handleOpenBorrowDialog} variant='contained'>
                 Borrow
             </Button>
         }
@@ -84,12 +94,19 @@ export const SingleBookRow: React.FC<{ book: Book }> = ({book}) => {
 
 
     </TableRow>
-    {isDeleteDialogOpen &&
-        <DeleteBookDialog
-            isDialogOpen={isDeleteDialogOpen}
-            closeDialog={handleCloseDeleteDialog}
-            isbn={book.isbn}
-            name={book.name}
-        />}
+        {isBorrowDialogOpen &&
+            <BorrowDialog
+                isDialogOpen={isBorrowDialogOpen}
+                closeDialog={handleCloseBorrowDialog}
+                isbn={book.isbn}
+                name={book.name}
+            />}
+        {isDeleteDialogOpen &&
+            <DeleteBookDialog
+                isDialogOpen={isDeleteDialogOpen}
+                closeDialog={handleCloseDeleteDialog}
+                isbn={book.isbn}
+                name={book.name}
+            />}
     </>
 }
