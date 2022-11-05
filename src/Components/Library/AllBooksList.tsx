@@ -5,18 +5,25 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import {BooksContext} from "../../App";
 import {Book} from "../../Models";
 import {SingleBookRow} from "./SingleBookRow";
 import {useUsers} from "../../Hooks/useUsers";
 import Button from "@mui/material/Button";
 import {PageTitle} from "../Common/PageTitle";
+import {AddBookDialog} from "./AddBookDialog";
 
 export const AllBooksList = () => {
     // @ts-ignore
     const {bookList, addBook} = useContext(BooksContext);
     const {userIsAdmin} = useUsers();
+
+    const [addDialogIsOpen, setAddDialogIsOpen] = useState<boolean>(false);
+
+    const openAddDialog = () => setAddDialogIsOpen(true);
+
+    const closeAddDialog = () => setAddDialogIsOpen(false);
 
     return <div className='books-list page-container'>
         <PageTitle title={'These are the books you can find in our library:'}
@@ -28,7 +35,6 @@ export const AllBooksList = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell align='right'>Name</TableCell>
-                            <TableCell align='right'>Author</TableCell>
                             <TableCell align='right'>Available copies</TableCell>
                             <TableCell align='right'>Price per day (€)</TableCell>
                             <TableCell align='right'/>
@@ -40,6 +46,8 @@ export const AllBooksList = () => {
                 </Table>
             </TableContainer>}
 
-        {userIsAdmin() && <Button onClick={addBook} variant='contained'>Add Book</Button>}
+        {userIsAdmin() && <Button onClick={openAddDialog} variant='contained'>Add Book</Button>}
+
+        {addDialogIsOpen && <AddBookDialog isDialogOpen={addDialogIsOpen} closeDialog={closeAddDialog}/>}
     </div>
 }

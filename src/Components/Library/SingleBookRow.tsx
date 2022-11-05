@@ -31,7 +31,6 @@ export const SingleBookRow:React.FC<{book: Book}> = ({book}) => {
         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
     >
         <TableCell align='right'>{book.name}</TableCell>
-        <TableCell align='right'>{book.author}</TableCell>
         <TableCell align='right'>{book.stocks}</TableCell>
         <TableCell align='right'>{book.price}</TableCell>
         <TableCell align='right'>

@@ -17,9 +17,8 @@ export type BorrowedCopy = {
 export type Book = {
     isbn: string; // ~= id
     name: string;
-    author: string;
     price: number; // I consider this price per day
     stocks: number; // books in library
 
-    borrowedCopies: Array<BorrowedCopy>;
+    borrowedCopies: Array<BorrowedCopy> | null;
 }

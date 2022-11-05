@@ -3,22 +3,24 @@ import {Book, BorrowedCopy, Client} from "../Models";
 
 
 export const useBooks = () => {
-    //const [library, setLibrary] = useState<<Library> | {}>({}) // maybe will use this later
     const [booksList, setBooksList] = useState<Array<Book> | null>(null);
-    const [firstCall, setFirstCall] = useState<boolean> (true);
+    const [firstCall, setFirstCall] = useState<boolean>(true);
 
     // for keeping it simple, will use just one local storage entity -> books
 
-    useEffect(()=> {
+    useEffect(() => {
         getBooks();
     }, [])
 
-    useEffect(()=> {
-        console.log(booksList);
-        if(!firstCall) {
+    useEffect(() => {
+        if (!firstCall) {
             localStorage.setItem("books", JSON.stringify(booksList));
         }
-        return () => setFirstCall(false);
+        return () => {
+            if (firstCall) {
+                setFirstCall(false);
+            }
+        }
     }, [booksList]);
 
     const getBooks = () => {
@@ -28,9 +30,13 @@ export const useBooks = () => {
         setBooksList(localStorageBooksObject ?? []);
     }
 
-    const addBook = (book: Book) => {
+    const addBook = async (book: Book) => {
         // @ts-ignore
-        booksList.push(book);
+        const updatedBooksList = [...booksList];
+        updatedBooksList.push(book)
+        console.log('updatedBooksList: ', updatedBooksList)
+
+        setBooksList(updatedBooksList);
         return;
     }
 
@@ -51,10 +57,10 @@ export const useBooks = () => {
         let numberOfDays = 0;
         let penaltyDays = 0;
 
-        const copyBeReturned:BorrowedCopy | null = findCopyToBeReturned(isbn, cliendId);
-        if(copyBeReturned) {
+        const copyBeReturned: BorrowedCopy | null = findCopyToBeReturned(isbn, cliendId);
+        if (copyBeReturned) {
             numberOfDays = getNumberOfDays(copyBeReturned);
-            if(numberOfDays > 14) {
+            if (numberOfDays > 14) {
                 penaltyDays = numberOfDays - 14;
             }
         }
