@@ -4,6 +4,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 import {Book} from "../../Models";
 import {BooksContext} from "../../App";
+import {useWindowSize} from "../../Hooks/useWindowSize";
 
 export const AddBookDialog: React.FC<{ isDialogOpen: boolean, closeDialog: Function }> = ({
                                                                                               isDialogOpen,
@@ -11,6 +12,7 @@ export const AddBookDialog: React.FC<{ isDialogOpen: boolean, closeDialog: Funct
                                                                                           }) => {
     // @ts-ignore
     const {addBook} = useContext(BooksContext);
+    const isMobile = useWindowSize();
 
     const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
 
@@ -49,7 +51,8 @@ export const AddBookDialog: React.FC<{ isDialogOpen: boolean, closeDialog: Funct
             price: Number(price),
             stocks: Number(stocks),
         }
-        addBook(newBook).then(closeDialog());
+        addBook(newBook);
+        closeDialog();
         return;
     }
 
@@ -66,7 +69,7 @@ export const AddBookDialog: React.FC<{ isDialogOpen: boolean, closeDialog: Funct
     const handleChangeStocks = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setStocks(e.target.value);
 
 
-    return <Dialog open={isDialogOpen}>
+    return <Dialog open={isDialogOpen} fullScreen={isMobile}>
         <DialogTitle>
             Add book
         </DialogTitle>

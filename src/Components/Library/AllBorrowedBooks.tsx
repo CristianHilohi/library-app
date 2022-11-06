@@ -1,7 +1,6 @@
 import {useAuth0} from "@auth0/auth0-react";
 import {useContext, useEffect} from "react";
 import {useUsers} from "../../Hooks/useUsers";
-import {useNavigate} from "react-router-dom";
 import {CircularProgress, Table} from "@mui/material";
 import {PageTitle} from "../Common/PageTitle";
 import {BooksContext} from "../../App";
@@ -25,12 +24,14 @@ export const AllBorrowedBooks = () => {
     useEffect(() => {
         getBooks();
         getAllBorrowedCopies();
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
         if(!userIsAdmin()) {
             navigateToBooksList();
         }
+        // eslint-disable-next-line
     }, [user])
 
     if (isLoading) {
@@ -55,7 +56,7 @@ export const AllBorrowedBooks = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {borrowedCopiesList?.map((bookCopy:BorrowedCopy) => <SingleBorrowedCopy bookCopy={bookCopy} />)}
+                    {borrowedCopiesList?.map((bookCopy:BorrowedCopy) => <SingleBorrowedCopy key={bookCopy.borrowDate.toString()} bookCopy={bookCopy}/>)}
                 </TableBody>
             </Table>
         </TableContainer>}

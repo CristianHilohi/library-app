@@ -66,15 +66,32 @@ export const useBooks = () => {
         updatedBooksList.push(book);
 
         setBooksList(updatedBooksList);
-        return;
+
+        toast.success('Book created!', {
+            position: "bottom-center",
+            autoClose: 5000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "dark",
+        });
     }
 
     const removeBook = (isbn: string) => {
         const updatedBooks = booksList.filter((book) => book.isbn !== isbn);
         setBooksList(updatedBooks);
+
+        toast.success('Book permanently removed!', {
+            position: "bottom-center",
+            autoClose: 5000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "dark",
+        });
     }
 
-    const supplyStock = (isbn: string) => {
+    const supplyStock = (isbn: string, showMessage: boolean = true) => {
         const updatedBooks = booksList.map((book: Book) => {
             if (book.isbn === isbn) {
                 book.stocks++;
@@ -83,9 +100,20 @@ export const useBooks = () => {
             return book;
         });
         setBooksList(updatedBooks);
+
+        if(showMessage) {
+            toast.success('Stock supplied!', {
+                position: "bottom-center",
+                autoClose: 5000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                theme: "dark",
+            });
+        }
     }
 
-    const reduceStock = (isbn: string) => {
+    const reduceStock = (isbn: string, showMessage: boolean = true) => {
         const updatedBooks = booksList.map((book: Book) => {
             if (book.isbn === isbn && book.stocks > 0) {
                 book.stocks--;
@@ -94,7 +122,20 @@ export const useBooks = () => {
             return book;
         });
         setBooksList(updatedBooks);
+
+        if(showMessage) {
+            toast.success('Stock reduced!', {
+                position: "bottom-center",
+                autoClose: 5000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                theme: "dark",
+            });
+        }
+
     }
+
     const checkStock = (isbn: string) => {
         let bookIsInStock = false;
         booksList.forEach((book: Book) => {
@@ -108,7 +149,7 @@ export const useBooks = () => {
     const borrowBookCopy = (isbn: string, client: Client) => {
         const bookInStock = checkStock(isbn);
         if (bookInStock) {
-            reduceStock(isbn);
+            reduceStock(isbn, false);
 
             const updatedBorrowedBooks = [...borrowedCopiesList];
             const copyToBeBorrowed: BorrowedCopy = {
@@ -119,15 +160,22 @@ export const useBooks = () => {
 
             updatedBorrowedBooks.push(copyToBeBorrowed);
             setBorrowedCopiesList(updatedBorrowedBooks);
+
+            toast.success('Book borrowed! You can find it in your list now.', {
+                position: "bottom-center",
+                autoClose: 5000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                theme: "dark",
+            });
         } else {
             toast.error('The last copy was just borrowed before! We are sorry for the inconvenience', {
                 position: "bottom-center",
                 autoClose: 10000,
-                hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
-                progress: undefined,
                 theme: "dark",
             });
         }
@@ -138,8 +186,17 @@ export const useBooks = () => {
         // Will check only date because a user can borrow multiple copies of the same book and the date has a precise enough timestamp
         const updatedBorrowedCopies = borrowedCopiesList.filter((copy:BorrowedCopy) => copy.borrowDate !== borrowDate);
         setBorrowedCopiesList(updatedBorrowedCopies);
-        supplyStock(isbn);
+        supplyStock(isbn, false);
         getUsersCopies();
+
+        toast.success('Book returned!', {
+            position: "bottom-center",
+            autoClose: 5000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "dark",
+        });
     }
 
     const findCopyByIsbn = (isbn: string) => {
