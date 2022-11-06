@@ -1,10 +1,14 @@
 import {useEffect, useState} from "react";
 import {Book, BorrowedCopy, Client} from "../Models";
 import {toast} from 'react-toastify';
+import {useAuth0} from "@auth0/auth0-react";
 
 export const useBooks = () => {
+    const {user} = useAuth0();
+    
     const [booksList, setBooksList] = useState<Array<Book>>([]);
     const [borrowedCopiesList, setBorrowedCopiesList] = useState<Array<BorrowedCopy>>([]);
+    const [userCopies, setUserCopies] = useState<Array<BorrowedCopy>>([]);
     const [firstCall, setFirstCall] = useState<boolean>(true);
 
     // for keeping it simple, will use just one local storage entity -> books
@@ -18,6 +22,7 @@ export const useBooks = () => {
                 setFirstCall(false);
             }
         }
+        // eslint-disable-next-line
     }, [booksList]);
 
     useEffect(() => {
@@ -29,35 +34,33 @@ export const useBooks = () => {
                 setFirstCall(false);
             }
         }
+        // eslint-disable-next-line
     }, [borrowedCopiesList]);
 
-    // actually there is no need for async, since these functions run only in the FE,
-    // but I'll add it for future BE implementation.
-    // Also a loading state could be added, but I'll skip that since it will always be false (because of the same reason)
-
-    const getBooks = async () => {
+    const getBooks = () => {
         const localStorageBooksString: string = localStorage.getItem('books') ?? '[]';
         const localStorageBooksObject: Array<Book> = JSON.parse(localStorageBooksString);
 
         setBooksList(localStorageBooksObject ?? []);
     }
 
-    const getAllBorrowedCopies = async () => {
+    const getAllBorrowedCopies = () => {
         const localStorageBorrowedCopiesString: string = localStorage.getItem('borrowedCopies') ?? '[]';
         const localStorageBorrowedCopiesObject: Array<BorrowedCopy> = JSON.parse(localStorageBorrowedCopiesString);
 
         setBorrowedCopiesList(localStorageBorrowedCopiesObject ?? []);
     }
 
-    const getUsersCopies = async (email:string) => {
+    const getUsersCopies = () => {
         const localStorageBorrowedCopiesString: string = localStorage.getItem('borrowedCopies') ?? '[]';
         const localStorageBorrowedCopiesObject: Array<BorrowedCopy> = JSON.parse(localStorageBorrowedCopiesString);
 
-        const usersCopies = localStorageBorrowedCopiesObject.filter((borrowedCopy:BorrowedCopy) => borrowedCopy.client.email === email);
-        setBorrowedCopiesList(usersCopies ?? []);
+        const usersCopies = localStorageBorrowedCopiesObject.filter((borrowedCopy:BorrowedCopy) => borrowedCopy.client.email === user?.email);
+        console.log(usersCopies)
+        setUserCopies(usersCopies);
     }
 
-    const addBook = async (book: Book) => {
+    const addBook = (book: Book) => {
         // @ts-ignore
         const updatedBooksList = [...booksList];
         updatedBooksList.push(book);
@@ -66,12 +69,12 @@ export const useBooks = () => {
         return;
     }
 
-    const removeBook = async (isbn: string) => {
+    const removeBook = (isbn: string) => {
         const updatedBooks = booksList.filter((book) => book.isbn !== isbn);
         setBooksList(updatedBooks);
     }
 
-    const supplyStock = async (isbn: string) => {
+    const supplyStock = (isbn: string) => {
         const updatedBooks = booksList.map((book: Book) => {
             if (book.isbn === isbn) {
                 book.stocks++;
@@ -82,7 +85,7 @@ export const useBooks = () => {
         setBooksList(updatedBooks);
     }
 
-    const reduceStock = async (isbn: string) => {
+    const reduceStock = (isbn: string) => {
         const updatedBooks = booksList.map((book: Book) => {
             if (book.isbn === isbn && book.stocks > 0) {
                 book.stocks--;
@@ -92,7 +95,7 @@ export const useBooks = () => {
         });
         setBooksList(updatedBooks);
     }
-    const checkStock = async (isbn: string) => {
+    const checkStock = (isbn: string) => {
         let bookIsInStock = false;
         booksList.forEach((book: Book) => {
             if (book.isbn === isbn) {
@@ -102,10 +105,10 @@ export const useBooks = () => {
         return bookIsInStock;
     }
 
-    const borrowBookCopy = async (isbn: string, client: Client) => {
-        const bookInStock = await checkStock(isbn);
+    const borrowBookCopy = (isbn: string, client: Client) => {
+        const bookInStock = checkStock(isbn);
         if (bookInStock) {
-            await reduceStock(isbn);
+            reduceStock(isbn);
 
             const updatedBorrowedBooks = [...borrowedCopiesList];
             const copyToBeBorrowed: BorrowedCopy = {
@@ -131,12 +134,12 @@ export const useBooks = () => {
         return;
     }
 
-    const returnBookCopy = async (isbn: string, borrowDate: Date) => {
+    const returnBookCopy = (isbn: string, borrowDate: Date) => {
         // Will check only date because a user can borrow multiple copies of the same book and the date has a precise enough timestamp
         const updatedBorrowedCopies = borrowedCopiesList.filter((copy:BorrowedCopy) => copy.borrowDate !== borrowDate);
         setBorrowedCopiesList(updatedBorrowedCopies);
-        await supplyStock(isbn);
-        return 0;
+        supplyStock(isbn);
+        getUsersCopies();
     }
 
     const findCopyByIsbn = (isbn: string) => {
@@ -148,6 +151,7 @@ export const useBooks = () => {
     return {
         booksList,
         borrowedCopiesList,
+        userCopies,
         getBooks,
         getAllBorrowedCopies,
         getUsersCopies,

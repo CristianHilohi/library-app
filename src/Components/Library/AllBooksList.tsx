@@ -17,7 +17,7 @@ import './TablesStyle.scss';
 
 export const AllBooksList = () => {
     // @ts-ignore
-    const {booksList, getBooks} = useContext(BooksContext);
+    const {booksList, getBooks, getAllBorrowedCopies} = useContext(BooksContext);
     const {userIsAdmin} = useUsers();
 
     const [addDialogIsOpen, setAddDialogIsOpen] = useState<boolean>(false);
@@ -28,6 +28,8 @@ export const AllBooksList = () => {
 
     useEffect(() => {
         getBooks();
+        getAllBorrowedCopies();
+        // eslint-disable-next-line
     }, []);
 
     return <div className='books-list page-container'>

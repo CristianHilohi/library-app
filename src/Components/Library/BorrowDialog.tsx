@@ -5,6 +5,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {BooksContext} from "../../App";
 import {Client} from "../../Models";
 import {useAuth0} from "@auth0/auth0-react";
+import {useWindowSize} from "../../Hooks/useWindowSize";
 
 export const BorrowDialog: React.FC<{ isDialogOpen: boolean, closeDialog: Function, isbn: string, name: string }> = ({
                                                                                                                          isDialogOpen,
@@ -15,6 +16,7 @@ export const BorrowDialog: React.FC<{ isDialogOpen: boolean, closeDialog: Functi
     // @ts-ignore
     const {borrowBookCopy} = useContext(BooksContext);
     const {user, isLoading} = useAuth0();
+    const isMobile = useWindowSize();
 
     const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
 
@@ -26,6 +28,7 @@ export const BorrowDialog: React.FC<{ isDialogOpen: boolean, closeDialog: Functi
         const phoneValid = phoneNumber.length >= 10 && phoneNumber.length <= 20;
 
         setIsSaveDisabled(!nameValid || !phoneValid || isLoading);
+        // eslint-disable-next-line
     }, [clientName, phoneNumber, isLoading])
 
     // @ts-ignore
@@ -38,10 +41,11 @@ export const BorrowDialog: React.FC<{ isDialogOpen: boolean, closeDialog: Functi
 
     const handleBorrowBook = () => {
         const client:Client = {email:user?.email ?? 'error' , name: clientName, phoneNumber: phoneNumber};
-        borrowBookCopy(isbn, client).then(()=> closeDialog())
+        borrowBookCopy(isbn, client);
+        closeDialog();
     }
 
-    return <Dialog open={isDialogOpen}>
+    return <Dialog open={isDialogOpen} fullScreen={isMobile}>
         <DialogTitle>
             Borrow {name}
         </DialogTitle>
@@ -61,7 +65,7 @@ export const BorrowDialog: React.FC<{ isDialogOpen: boolean, closeDialog: Functi
                         'You have reached the maximum limit (100). Please decrease the number of characters',
                     ]}
                     InputProps={{
-                        endAdornment: <span> {name ? name.length : 0}/100 </span>,
+                        endAdornment: <span> {clientName ? clientName.length : 0}/100 </span>,
                     }}
                 />
                 <TextValidator

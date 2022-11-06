@@ -1,6 +1,5 @@
 import {useAuth0} from "@auth0/auth0-react";
-import {useContext, useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useContext, useEffect} from "react";
 import {Button, CircularProgress, Table} from "@mui/material";
 import {PageTitle} from "../Common/PageTitle";
 import {useAppNavigation} from "../../Hooks/useAppNavigation";
@@ -18,14 +17,15 @@ export const MyBooks = () => {
     const {user, isLoading, isAuthenticated} = useAuth0();
     const {navigateToBooksList} = useAppNavigation();
     // @ts-ignore
-    const {borrowedCopiesList, getUsersCopies, getBooks} = useContext(BooksContext);
+    const {getUsersCopies, getBooks, userCopies} = useContext(BooksContext);
 
     useEffect(() => {
-        if(!isAuthenticated) {
+        if (!isAuthenticated) {
             navigateToBooksList();
         }
         getBooks();
-        getUsersCopies(user?.email);
+        getUsersCopies();
+        // eslint-disable-next-line
     }, [user]);
 
     if (isLoading) {
@@ -34,11 +34,11 @@ export const MyBooks = () => {
 
     return <div className='my-books page-container'>
         <PageTitle title='My borrowed books:'
-                   emptyText={!borrowedCopiesList ? 'You don\'t have any books borrowed' : ''}/>
+                   emptyText={!userCopies ? 'You don\'t have any books borrowed' : ''}/>
 
         {/*I wanted to also add some sorting to the table, but found out that MUI doesn't provide sorting in the table API*/}
         {/*I can do it manually or change the table component (for example Ant Design has sort options)*/}
-        {borrowedCopiesList && <TableContainer  component={Paper}>
+        {userCopies && <TableContainer component={Paper}>
             <Table sx={{minWidth: 650}} aria-label="simple table" className={'books-table'}>
                 <TableHead>
                     <TableRow>
@@ -51,12 +51,12 @@ export const MyBooks = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {borrowedCopiesList?.map((bookCopy:BorrowedCopy) => <SingleBorrowedCopy bookCopy={bookCopy} />)}
+                    {userCopies?.map((bookCopy: BorrowedCopy) => <SingleBorrowedCopy  key={bookCopy.borrowDate.toString()} bookCopy={bookCopy}/>)}
                 </TableBody>
             </Table>
         </TableContainer>}
 
-        <br />
+        <br/>
         <Button variant='contained' onClick={navigateToBooksList}>Search new books</Button>
     </div>
 }
